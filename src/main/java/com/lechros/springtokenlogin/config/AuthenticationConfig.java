@@ -10,7 +10,7 @@ import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationF
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-public class AuthorizationServerConfig {
+public class AuthenticationConfig {
 
     /**
      * 소셜 로그인 처리 URI
