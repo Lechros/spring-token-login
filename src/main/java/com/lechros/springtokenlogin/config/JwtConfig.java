@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
-public class TokenConfig {
+public class JwtConfig {
 
     @Bean
     public JwtEncoder jwtEncoder() { // JWT 발급에 사용
