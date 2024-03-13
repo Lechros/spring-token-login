@@ -15,7 +15,7 @@ public class RefreshTokenGenerator {
     private final StringKeyGenerator tokenGenerator =
         new Base64StringKeyGenerator(Base64.getUrlEncoder().withoutPadding(), 96);
 
-    public AbstractOAuth2Token generate(TokenParams params) {
+    public OAuth2RefreshToken generate(TokenParams params) {
         if (!TokenType.REFRESH_TOKEN.equals(params.getTokenType())) {
             return null;
         }
