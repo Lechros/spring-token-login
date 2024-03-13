@@ -25,7 +25,7 @@ public class RegisteredOAuth2UserService extends DefaultOAuth2UserService {
         // 받아온 정보의 sub로 필요 시 DB에 저장하고 user 가져오기
         User user = findOrRegister(userRequest, oauth2User);
         // name이 user.id(PK)로 설정된 OAuth2User 반환
-        return RegisteredOAuth2User.from(oauth2User, String.valueOf(user.getId()));
+        return RegisteredOAuth2User.from(oauth2User, user);
     }
 
     private User findOrRegister(OAuth2UserRequest userRequest, OAuth2User oauth2User) {
@@ -33,15 +33,15 @@ public class RegisteredOAuth2UserService extends DefaultOAuth2UserService {
         String providerId = oauth2User.getName();
 
         return find(provider, providerId)
-            .orElseGet(() ->
-                // TODO: provider별로 oauth2User.getAttributes에서 username 가져오는 기능 추가
-                register("new user", provider, providerId));
+                .orElseGet(() ->
+                        // TODO: provider별로 oauth2User.getAttributes에서 username 가져오는 기능 추가
+                        register("new user", provider, providerId));
     }
 
     private Optional<User> find(String provider, String providerId) {
         return userSocialLoginRepository
-            .findByProviderAndProviderId(provider, providerId)
-            .map(UserSocialLogin::getUser);
+                .findByProviderAndProviderId(provider, providerId)
+                .map(UserSocialLogin::getUser);
     }
 
     private User register(String username, String provider, String providerId) {
@@ -49,10 +49,10 @@ public class RegisteredOAuth2UserService extends DefaultOAuth2UserService {
         user = userRepository.save(user);
 
         UserSocialLogin socialLogin = UserSocialLogin.builder()
-            .user(user)
-            .provider(provider)
-            .providerId(providerId)
-            .build();
+                .user(user)
+                .provider(provider)
+                .providerId(providerId)
+                .build();
         socialLogin = userSocialLoginRepository.save(socialLogin);
 
         return user;
