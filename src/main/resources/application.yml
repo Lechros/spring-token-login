@@ -25,3 +25,9 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-info-authentication-method: POST
             user-name-attribute: id
+
+authorization:
+  issuer: http://localhost:8080
+  audience: http://localhost:8080
+  access-token-time-to-live: 1800
+  refresh-token-time-to-live: 7776000
