@@ -17,7 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
-public class AuthenticationConfig {
+public class AuthorizationConfig {
 
     /**
      * 소셜 로그인 처리 URI
