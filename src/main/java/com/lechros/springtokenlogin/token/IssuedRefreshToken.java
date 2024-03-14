@@ -30,9 +30,9 @@ public class IssuedRefreshToken {
 
     private Boolean invalidated;
 
-    public boolean validate(String token, Long userId) {
+    public boolean validate(String token) {
         // TODO: 검증 실패 시 Exception 발생
-        return tokenValue.equals(token) && user.getId().equals(userId) && checkTime(Instant.now()) && !getInvalidated();
+        return tokenValue.equals(token) && checkTime(Instant.now()) && !invalidated;
     }
 
     public void invalidate() {

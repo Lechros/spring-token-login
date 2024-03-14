@@ -2,7 +2,6 @@ package com.lechros.springtokenlogin.token;
 
 import com.lechros.springtokenlogin.authentication.RegisteredOAuth2User;
 import com.lechros.springtokenlogin.user.User;
-import com.lechros.springtokenlogin.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.AbstractOAuth2Token;
@@ -28,7 +27,6 @@ public class TokenService {
     private final AccessTokenGenerator accessTokenGenerator;
     private final RefreshTokenGenerator refreshTokenGenerator;
     private final IssuedRefreshTokenRepository issuedRefreshTokenRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public AccessTokenResponse issueNewAccessToken(RegisteredOAuth2User principal) {
@@ -36,17 +34,17 @@ public class TokenService {
     }
 
     @Transactional
-    public AccessTokenResponse refreshAccessToken(String refreshTokenValue, Long userId) {
+    public AccessTokenResponse refreshAccessToken(String refreshTokenValue) {
         Optional<IssuedRefreshToken> maybeFoundRefreshToken = issuedRefreshTokenRepository.findByTokenValue(refreshTokenValue);
         if (maybeFoundRefreshToken.isEmpty()) {
-            throw new RuntimeException("Invalid refresh token");
+            throw new RuntimeException("Unknown refresh token");
         }
         IssuedRefreshToken foundRefreshToken = maybeFoundRefreshToken.get();
         if (!foundRefreshToken.validate(refreshTokenValue)) {
             throw new RuntimeException("Invalid refresh token");
         }
 
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = foundRefreshToken.getUser();
 
         // Refresh token rotation 사용, 기존 토큰 무효화
         foundRefreshToken.invalidate();
