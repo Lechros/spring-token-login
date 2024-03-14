@@ -1,8 +1,10 @@
 package com.lechros.springtokenlogin.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 
@@ -10,6 +12,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 public class JwtConfig {
+
+    @Value("${authorization.issuer}")
+    private String issuer;
 
     @Bean
     public SecretKeySpec secretKeySpec() {
@@ -30,6 +35,11 @@ public class JwtConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() { // OAuth2 Resource Server에서 사용
-        return NimbusJwtDecoder.withSecretKey(secretKeySpec()).build();
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec()).build();
+
+        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuer);
+        jwtDecoder.setJwtValidator(withIssuer);
+
+        return jwtDecoder;
     }
 }
