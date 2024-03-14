@@ -28,18 +28,18 @@ public class IssuedRefreshToken {
 
     private Long expiresAt;
 
-    private Boolean invalidated;
+    private Boolean revoked;
 
     public boolean validate(String token) {
         // TODO: 검증 실패 시 Exception 발생
-        return tokenValue.equals(token) && checkTime(Instant.now()) && !invalidated;
+        return tokenValue.equals(token) && checkTime(Instant.now()) && !revoked;
     }
 
-    public void invalidate() {
-        if (invalidated) {
+    public void revoke() {
+        if (revoked) {
             throw new RuntimeException("Already invalidated");
         }
-        invalidated = true;
+        revoked = true;
     }
 
     public boolean checkTime(Instant now) {
@@ -55,7 +55,7 @@ public class IssuedRefreshToken {
             .user(user)
             .issuedAt(token.getIssuedAt().getEpochSecond())
             .expiresAt(token.getExpiresAt().getEpochSecond())
-            .invalidated(false)
+            .revoked(false)
             .build();
     }
 }

@@ -47,7 +47,7 @@ public class TokenService {
         User user = foundRefreshToken.getUser();
 
         // Refresh token rotation 사용, 기존 토큰 무효화
-        foundRefreshToken.invalidate();
+        foundRefreshToken.revoke();
         foundRefreshToken = issuedRefreshTokenRepository.save(foundRefreshToken);
 
         // 새로운 토큰 발급
