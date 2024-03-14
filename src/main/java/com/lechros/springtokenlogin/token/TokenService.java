@@ -68,21 +68,21 @@ public class TokenService {
 
     private TokenParams accessTokenParams(User user) {
         return TokenParams.builder()
-                .tokenType(TokenType.ACCESS_TOKEN)
-                .issuer(issuer)
-                .audience(audience)
-                .userId(String.valueOf(user.getId()))
-                .tokenTimeToLive(Duration.ofSeconds(accessTokenTimeToLive))
-                .build();
+            .tokenType(TokenType.ACCESS_TOKEN)
+            .issuer(issuer)
+            .audience(audience)
+            .userId(String.valueOf(user.getId()))
+            .tokenTimeToLive(Duration.ofSeconds(accessTokenTimeToLive))
+            .build();
     }
 
     private TokenParams refreshTokenParams(User user) {
         return TokenParams.builder()
-                .tokenType(TokenType.REFRESH_TOKEN)
-                .issuer(issuer)
-                .audience(audience)
-                .userId(String.valueOf(user.getId()))
-                .tokenTimeToLive(Duration.ofSeconds(refreshTokenTimeToLive))
-                .build();
+            .tokenType(TokenType.REFRESH_TOKEN)
+            .issuer(issuer)
+            .audience(audience)
+            .userId(String.valueOf(user.getId()))
+            .tokenTimeToLive(Duration.ofSeconds(refreshTokenTimeToLive))
+            .build();
     }
 }

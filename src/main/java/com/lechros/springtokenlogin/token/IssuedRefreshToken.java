@@ -51,11 +51,11 @@ public class IssuedRefreshToken {
 
     public static IssuedRefreshToken from(AbstractOAuth2Token token, User user) {
         return IssuedRefreshToken.builder()
-                .tokenValue(token.getTokenValue())
-                .user(user)
-                .issuedAt(token.getIssuedAt().getEpochSecond())
-                .expiresAt(token.getExpiresAt().getEpochSecond())
-                .invalidated(false)
-                .build();
+            .tokenValue(token.getTokenValue())
+            .user(user)
+            .issuedAt(token.getIssuedAt().getEpochSecond())
+            .expiresAt(token.getExpiresAt().getEpochSecond())
+            .invalidated(false)
+            .build();
     }
 }

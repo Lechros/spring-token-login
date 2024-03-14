@@ -35,15 +35,15 @@ public class RegisteredOAuth2UserService extends DefaultOAuth2UserService {
         String providerId = oauth2User.getName();
 
         return find(provider, providerId)
-                .orElseGet(() ->
-                        // TODO: provider별로 oauth2User.getAttributes에서 username 가져오는 기능 추가
-                        register("new user", provider, providerId));
+            .orElseGet(() ->
+                // TODO: provider별로 oauth2User.getAttributes에서 username 가져오는 기능 추가
+                register("new user", provider, providerId));
     }
 
     private Optional<User> find(String provider, String providerId) {
         return userSocialLoginRepository
-                .findByProviderAndProviderId(provider, providerId)
-                .map(UserSocialLogin::getUser);
+            .findByProviderAndProviderId(provider, providerId)
+            .map(UserSocialLogin::getUser);
     }
 
     private User register(String username, String provider, String providerId) {
@@ -51,10 +51,10 @@ public class RegisteredOAuth2UserService extends DefaultOAuth2UserService {
         user = userRepository.save(user);
 
         UserSocialLogin socialLogin = UserSocialLogin.builder()
-                .user(user)
-                .provider(provider)
-                .providerId(providerId)
-                .build();
+            .user(user)
+            .provider(provider)
+            .providerId(providerId)
+            .build();
         socialLogin = userSocialLoginRepository.save(socialLogin);
 
         return user;
