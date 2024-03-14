@@ -31,6 +31,8 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-info-authentication-method: POST
             user-name-attribute: id
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 
 authorization:
   issuer: http://localhost:8080
