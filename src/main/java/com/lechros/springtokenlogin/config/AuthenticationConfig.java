@@ -3,7 +3,6 @@ package com.lechros.springtokenlogin.config;
 import com.lechros.springtokenlogin.authentication.InMemoryOAuth2AuthorizationRequestRepository;
 import com.lechros.springtokenlogin.authentication.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -14,9 +13,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
@@ -33,10 +30,8 @@ public class AuthenticationConfig {
     private static String redirectionUri =
         OAuth2LoginAuthenticationFilter.DEFAULT_FILTER_PROCESSES_URI;
 
-    @Value("${client.base-url}")
-    private String clientBaseUrl;
-
     private final OAuth2AuthenticationSuccessHandler successHandler;
+    private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -52,7 +47,7 @@ public class AuthenticationConfig {
                 .redirectionEndpoint(redirection -> redirection
                     .baseUri(redirectionUri))
                 .successHandler(successHandler))
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+            .cors(cors -> cors.configurationSource(corsConfigurationSource));
 
         return http.build();
     }
@@ -60,18 +55,5 @@ public class AuthenticationConfig {
     @Bean
     public AuthorizationRequestRepository<OAuth2AuthorizationRequest> authorizationRequestRepository() {
         return new InMemoryOAuth2AuthorizationRequestRepository();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        config.addAllowedOrigin(clientBaseUrl);
-        config.setAllowCredentials(true);
-        source.registerCorsConfiguration("/**", config);
-        return source;
     }
 }
