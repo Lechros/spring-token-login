@@ -1,5 +1,6 @@
 package com.lechros.springtokenlogin.authentication;
 
+import com.lechros.springtokenlogin.util.ExpiringHashMap;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
@@ -11,8 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public final class InMemoryOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
-    // TODO: 일정 시간이 지난 OAuth2AuthorizationRequest를 목록에서 제거 (세션 기본=30분)
-    private final Map<String, OAuth2AuthorizationRequest> authorizationRequests = new ConcurrentHashMap<>();
+    // 30분 내에 로그인을 완료하지 않으면 요청 삭제
+    private final Map<String, OAuth2AuthorizationRequest> authorizationRequests = new ExpiringHashMap<>(30 * 60 * 1000);
 
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
         Assert.notNull(request, "request cannot be null");
