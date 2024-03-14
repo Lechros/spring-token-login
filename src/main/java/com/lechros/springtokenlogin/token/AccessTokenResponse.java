@@ -34,13 +34,13 @@ public class AccessTokenResponse {
         Builder accessToken(AbstractOAuth2Token token) {
             tokenType = OAuth2AccessToken.TokenType.BEARER.getValue();
             accessToken = token.getTokenValue();
-            expiresIn = Instant.now().until(token.getExpiresAt(), ChronoUnit.SECONDS);
+            expiresIn = token.getExpiresAt().getEpochSecond() - Instant.now().getEpochSecond() - 1;
             return this;
         }
 
         public Builder refreshToken(AbstractOAuth2Token token) {
             refreshToken = token.getTokenValue();
-            refreshTokenExpiresIn = Instant.now().until(token.getExpiresAt(), ChronoUnit.SECONDS);
+            refreshTokenExpiresIn = token.getExpiresAt().getEpochSecond() - Instant.now().getEpochSecond();
             return this;
         }
 
