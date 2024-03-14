@@ -1,6 +1,8 @@
 package com.lechros.springtokenlogin.config;
 
 import com.lechros.springtokenlogin.authentication.InMemoryOAuth2AuthorizationRequestRepository;
+import com.lechros.springtokenlogin.authentication.OAuth2AuthenticationSuccessHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@RequiredArgsConstructor
 public class AuthenticationConfig {
 
     /**
@@ -33,6 +36,8 @@ public class AuthenticationConfig {
     @Value("${client.base-url}")
     private String clientBaseUrl;
 
+    private final OAuth2AuthenticationSuccessHandler successHandler;
+
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -45,7 +50,8 @@ public class AuthenticationConfig {
                     .baseUri(authorizationUri)
                     .authorizationRequestRepository(authorizationRequestRepository()))
                 .redirectionEndpoint(redirection -> redirection
-                    .baseUri(redirectionUri)))
+                    .baseUri(redirectionUri))
+                .successHandler(successHandler))
             .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
