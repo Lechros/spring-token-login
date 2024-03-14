@@ -88,3 +88,6 @@ authorization:
 - Spring Security OAuth2 Resource Server: API 엔드포인트 JWT로 보호
 - Spring Data JPA: 사용자 로그인 정보 및 리프레시 토큰 목록 저장
 - MySQL
+
+## TODO
+- PKCE 구현
