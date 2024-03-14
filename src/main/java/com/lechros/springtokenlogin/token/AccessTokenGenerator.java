@@ -1,11 +1,8 @@
 package com.lechros.springtokenlogin.token;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.core.AbstractOAuth2Token;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
@@ -14,6 +11,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class AccessTokenGenerator {
 
+    private final JwsHeader jwsHeader;
     private final JwtEncoder jwtEncoder;
 
     public Jwt generate(TokenParams params) {
@@ -39,6 +37,6 @@ public class AccessTokenGenerator {
 
         JwtClaimsSet claims = claimsBuilder.build();
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims));
+        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims));
     }
 }
