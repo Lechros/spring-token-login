@@ -3,12 +3,13 @@ package com.lechros.springtokenlogin.token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.keygen.Base64StringKeyGenerator;
 import org.springframework.security.crypto.keygen.StringKeyGenerator;
-import org.springframework.security.oauth2.core.AbstractOAuth2Token;
 import org.springframework.security.oauth2.core.OAuth2RefreshToken;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.Base64;
 
+@Component
 @RequiredArgsConstructor
 public class RefreshTokenGenerator {
 

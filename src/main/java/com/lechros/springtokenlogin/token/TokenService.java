@@ -6,11 +6,13 @@ import com.lechros.springtokenlogin.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.AbstractOAuth2Token;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Optional;
 
+@Service
 @RequiredArgsConstructor
 public class TokenService {
 

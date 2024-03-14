@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 import java.time.Instant;
 import java.util.Collections;
 
+@Component
 @RequiredArgsConstructor
 public class AccessTokenGenerator {
 
