@@ -42,7 +42,7 @@ public class TokenService {
             throw new RuntimeException("Invalid refresh token");
         }
         IssuedRefreshToken foundRefreshToken = maybeFoundRefreshToken.get();
-        if (foundRefreshToken.validate(refreshTokenValue, userId)) {
+        if (!foundRefreshToken.validate(refreshTokenValue)) {
             throw new RuntimeException("Invalid refresh token");
         }
 
