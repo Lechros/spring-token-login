@@ -4,6 +4,10 @@ Spring Security OAuth2 모듈과 SPA 클라이언트를 사용해서 소셜(카�
 
 액세스 토큰은 self-contained (JWT), 리프레시 토큰은 reference (Opaque) 형식이고, refresh token rotation이 적용되었습니다.
 
+## Overview
+![spring-token-login](https://github.com/Lechros/spring-token-login/assets/6011621/1c3ed9c1-61b3-4718-b748-03d34a8b8215)
+
+
 ## Setup
 
 ### 카카오 애플리케이션 설정
