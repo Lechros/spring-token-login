@@ -11,7 +11,7 @@ import java.util.Base64;
 
 @Component
 @RequiredArgsConstructor
-public class RefreshTokenGenerator {
+public class RefreshTokenGenerator implements TokenGenerator<OAuth2RefreshToken> {
 
     private final StringKeyGenerator tokenGenerator =
         new Base64StringKeyGenerator(Base64.getUrlEncoder().withoutPadding(), 96);

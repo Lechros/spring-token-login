@@ -10,7 +10,7 @@ import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
-public class AccessTokenGenerator {
+public class AccessTokenGenerator implements TokenGenerator<Jwt> {
 
     private final JwsHeader jwsHeader;
     private final JwtEncoder jwtEncoder;

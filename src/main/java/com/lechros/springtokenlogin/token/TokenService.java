@@ -24,8 +24,8 @@ public class TokenService {
     @Value("${authorization.refresh-token-time-to-live}")
     private Long refreshTokenTimeToLive;
 
-    private final AccessTokenGenerator accessTokenGenerator;
-    private final RefreshTokenGenerator refreshTokenGenerator;
+    private final TokenGenerator<?> accessTokenGenerator;
+    private final TokenGenerator<?> refreshTokenGenerator;
     private final IssuedRefreshTokenRepository issuedRefreshTokenRepository;
 
     @Transactional
