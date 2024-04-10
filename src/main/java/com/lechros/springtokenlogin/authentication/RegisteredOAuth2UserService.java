@@ -25,14 +25,13 @@ public class RegisteredOAuth2UserService extends DefaultOAuth2UserService {
         // 토큰 정보 API에서 사용자 정보 받아오기
         OAuth2User oauth2User = super.loadUser(userRequest);
         // 받아온 정보의 sub로 필요 시 DB에 저장하고 user 가져오기
-        User user = findOrRegister(userRequest, oauth2User);
+        User user = findOrRegister(userRequest, oauth2User.getName());
         // name이 user.id(PK)로 설정된 OAuth2User 반환
         return RegisteredOAuth2User.from(oauth2User, user);
     }
 
-    private User findOrRegister(OAuth2UserRequest userRequest, OAuth2User oauth2User) {
+    private User findOrRegister(OAuth2UserRequest userRequest, String providerId) {
         String provider = userRequest.getClientRegistration().getRegistrationId();
-        String providerId = oauth2User.getName();
 
         return find(provider, providerId)
             .orElseGet(() ->
