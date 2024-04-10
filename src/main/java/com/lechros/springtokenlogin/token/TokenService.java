@@ -29,8 +29,8 @@ public class TokenService {
     private final IssuedRefreshTokenRepository issuedRefreshTokenRepository;
 
     @Transactional
-    public AccessTokenResponse issueNewAccessToken(RegisteredOAuth2User principal) {
-        return generateToken(principal.getUser());
+    public AccessTokenResponse issueNewAccessToken(User user) {
+        return generateToken(user);
     }
 
     @Transactional
