@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -40,8 +41,11 @@ public class TokenService {
             throw new RuntimeException("Unknown refresh token");
         }
         IssuedRefreshToken foundRefreshToken = maybeFoundRefreshToken.get();
-        if (!foundRefreshToken.validate(refreshTokenValue)) {
-            throw new RuntimeException("Invalid refresh token");
+        if (foundRefreshToken.getRevoked()) {
+            throw new RuntimeException("Revoked refresh token");
+        }
+        if (!foundRefreshToken.isExpired(Instant.now().getEpochSecond())) {
+            throw new RuntimeException("Expired refresh token");
         }
 
         User user = foundRefreshToken.getUser();

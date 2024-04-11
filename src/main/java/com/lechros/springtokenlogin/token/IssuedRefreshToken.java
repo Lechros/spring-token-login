@@ -30,23 +30,16 @@ public class IssuedRefreshToken {
 
     private Boolean revoked;
 
-    public boolean validate(String token) {
-        // TODO: 검증 실패 시 Exception 발생
-        return tokenValue.equals(token) && checkTime(Instant.now()) && !revoked;
-    }
-
     public void revoke() {
         if (revoked) {
-            throw new RuntimeException("Already invalidated");
+            throw new RuntimeException("Already revoked");
         }
         revoked = true;
     }
 
-    public boolean checkTime(Instant now) {
+    public boolean isExpired(Long now) {
         // 발급과 검증을 동일한 서버에서 진행하므로 clock skew를 고려할 필요가 없음
-        Instant iat = Instant.ofEpochSecond(issuedAt);
-        Instant exp = Instant.ofEpochSecond(expiresAt);
-        return now.isAfter(iat) && now.isBefore(exp);
+        return now < issuedAt || expiresAt < now;
     }
 
     public static IssuedRefreshToken from(AbstractOAuth2Token token, User user) {
