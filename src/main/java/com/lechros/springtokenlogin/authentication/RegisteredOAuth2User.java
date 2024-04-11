@@ -21,7 +21,7 @@ public class RegisteredOAuth2User implements OAuth2User {
 
     private final User user;
 
-    private RegisteredOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes, User user) {
+    public RegisteredOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes, User user) {
         this.authorities = authorities != null ? Collections.unmodifiableSet(new LinkedHashSet<>(this.sortAuthorities(authorities))) : Collections.unmodifiableSet(new LinkedHashSet<>(AuthorityUtils.NO_AUTHORITIES));
         this.attributes = Collections.unmodifiableMap(new LinkedHashMap<>(attributes));
         this.user = user;
