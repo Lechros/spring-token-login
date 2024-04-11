@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +19,7 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 
+@Component
 public class AppleClientSecretGenerator implements ClientSecretGenerator {
 
     @Getter

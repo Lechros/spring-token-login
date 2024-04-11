@@ -66,9 +66,9 @@ public class AuthorizationConfig {
     }
 
     @Bean
-    public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties properties) {
+    public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties properties, AppleClientSecretGenerator appleClientSecretGenerator) {
         Map<String, ClientRegistration> registrations = new OAuth2ClientPropertiesMapper(properties).asClientRegistrations();
-        List<ClientSecretGenerator> secretGenerators = List.of(new AppleClientSecretGenerator());
+        List<ClientSecretGenerator> secretGenerators = List.of(appleClientSecretGenerator);
         return new DynamicInMemoryClientRegistrationRepository(registrations, secretGenerators);
     }
 }
