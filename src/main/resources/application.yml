@@ -15,11 +15,19 @@ spring:
     oauth2:
       client:
         registration:
+          apple:
+            client-id: ${APPLE_CLIENT_ID}
+            team-id: ${APPLE_TEAM_ID}
+            key-id: ${APPLE_KEY_ID}
+            key-path: ${APPLE_KEY_PATH}
+            client-authentication-method: client_secret_post
+            redirect-uri: ${client.base-url}/login/callback/apple
+            authorization-grant-type: authorization_code
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
             client-secret: ${KAKAO_CLIENT_SECRET}
             client-authentication-method: client_secret_post
-            redirect-uri: ${client.base-url}/login/callback
+            redirect-uri: ${client.base-url}/login/callback/kakao
             authorization-grant-type: authorization_code
             scope:
               - profile_nickname

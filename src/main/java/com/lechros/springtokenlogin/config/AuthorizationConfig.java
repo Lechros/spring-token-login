@@ -2,6 +2,7 @@ package com.lechros.springtokenlogin.config;
 
 import com.lechros.springtokenlogin.authentication.InMemoryOAuth2AuthorizationRequestRepository;
 import com.lechros.springtokenlogin.authentication.OAuth2AuthenticationSuccessHandler;
+import com.lechros.springtokenlogin.provider.AppleClientSecretGenerator;
 import com.lechros.springtokenlogin.provider.ClientSecretGenerator;
 import com.lechros.springtokenlogin.provider.DynamicInMemoryClientRegistrationRepository;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +68,7 @@ public class AuthorizationConfig {
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties properties) {
         Map<String, ClientRegistration> registrations = new OAuth2ClientPropertiesMapper(properties).asClientRegistrations();
-        List<ClientSecretGenerator> secretGenerators = List.of();
+        List<ClientSecretGenerator> secretGenerators = List.of(new AppleClientSecretGenerator());
         return new DynamicInMemoryClientRegistrationRepository(registrations, secretGenerators);
     }
 }
