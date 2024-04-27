@@ -35,7 +35,6 @@ public class AuthorizationConfig {
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println(authorizationProperties.getTokenUri());
         http
             // SecurityFilterChain에서 소셜 로그인, 인증 요청 URI만 처리 -> 로그인 페이지 제거
             .securityMatcher(authorizationProperties.getAuthorizationUri(), authorizationProperties.getRedirectionUri())

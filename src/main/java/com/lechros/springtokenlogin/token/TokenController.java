@@ -18,7 +18,6 @@ public class TokenController {
         @RequestParam("grant_type") String grantType,
         @RequestParam("refresh_token") String refreshToken
     ) {
-        System.out.println("TOKEN CONTROLLER ACCESSED");
         if (!OAuth2ParameterNames.REFRESH_TOKEN.equals(grantType)) {
             throw new RuntimeException("unsupported_grant_type");
         }
