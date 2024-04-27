@@ -44,7 +44,7 @@ public class TokenService {
         if (foundRefreshToken.getRevoked()) {
             throw new RuntimeException("Revoked refresh token");
         }
-        if (!foundRefreshToken.isExpired(Instant.now().getEpochSecond())) {
+        if (foundRefreshToken.isExpired(Instant.now().getEpochSecond())) {
             throw new RuntimeException("Expired refresh token");
         }
 
