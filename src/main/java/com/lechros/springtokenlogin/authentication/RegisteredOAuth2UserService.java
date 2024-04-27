@@ -50,8 +50,16 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
         } else {
             // 토큰 정보 API에서 사용자 정보 받아오기
             OAuth2User oauth2User = delegate.loadUser(userRequest);
+            String oauth2UserName;
+            // Spring Security 6.3.0-M2부터 nested user-name-attribute 설정 가능, until then...
+            // https://github.com/spring-projects/spring-security/pull/14265
+            if ("naver".equals(registrationId)) {
+                oauth2UserName = (String) ((Map<String, Object>) oauth2User.getAttributes().get("response")).get("id");
+            } else {
+                oauth2UserName = oauth2User.getName();
+            }
             // 받아온 정보의 sub로 필요 시 DB에 저장하고 user 가져오기
-            User user = userSocialLoginService.findOrRegister(registrationId, oauth2User.getName());
+            User user = userSocialLoginService.findOrRegister(registrationId, oauth2UserName);
 
             return new RegisteredOAuth2User(oauth2User.getAuthorities(), oauth2User.getAttributes(), user);
         }
