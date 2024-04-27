@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
-import java.util.Collections;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ public class AccessTokenGenerator implements TokenGenerator<Jwt> {
         }
         claimsBuilder
             .subject(params.getUserId())
-            .audience(Collections.singletonList(params.getAudience()))
+            .audience(params.getAudiences())
             .issuedAt(issuedAt)
             .expiresAt(expiresAt)
             .notBefore(issuedAt);

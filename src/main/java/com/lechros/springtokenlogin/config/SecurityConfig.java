@@ -15,14 +15,14 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final AuthorizationProperties authorizationProperties;
     private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                // 토큰 갱신 요청 경로 (TokenController)
-                .requestMatchers(HttpMethod.POST, "/oauth2/token").permitAll()
+                .requestMatchers(HttpMethod.POST, authorizationProperties.getTokenUri()).permitAll()
                 .anyRequest().authenticated())
             .oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(Customizer.withDefaults()))

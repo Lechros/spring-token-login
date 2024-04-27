@@ -1,14 +1,12 @@
 package com.lechros.springtokenlogin.token;
 
-import com.lechros.springtokenlogin.authentication.RegisteredOAuth2User;
+import com.lechros.springtokenlogin.config.TokenProperties;
 import com.lechros.springtokenlogin.user.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.AbstractOAuth2Token;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -16,14 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TokenService {
 
-    @Value("${authorization.issuer}")
-    private String issuer;
-    @Value("${authorization.audience}")
-    private String audience;
-    @Value("${authorization.access-token-time-to-live}")
-    private Long accessTokenTimeToLive;
-    @Value("${authorization.refresh-token-time-to-live}")
-    private Long refreshTokenTimeToLive;
+    private final TokenProperties tokenProperties;
 
     private final TokenGenerator<?> accessTokenGenerator;
     private final TokenGenerator<?> refreshTokenGenerator;
@@ -71,20 +62,20 @@ public class TokenService {
     private TokenParams accessTokenParams(User user) {
         return TokenParams.builder()
             .tokenType(TokenType.ACCESS_TOKEN)
-            .issuer(issuer)
-            .audience(audience)
+            .issuer(tokenProperties.getIssuer())
+            .audiences(tokenProperties.getAudiences())
             .userId(String.valueOf(user.getId()))
-            .tokenTimeToLive(Duration.ofSeconds(accessTokenTimeToLive))
+            .tokenTimeToLive(tokenProperties.getAccessTokenTimeToLive())
             .build();
     }
 
     private TokenParams refreshTokenParams(User user) {
         return TokenParams.builder()
             .tokenType(TokenType.REFRESH_TOKEN)
-            .issuer(issuer)
-            .audience(audience)
+            .issuer(tokenProperties.getIssuer())
+            .audiences(tokenProperties.getAudiences())
             .userId(String.valueOf(user.getId()))
-            .tokenTimeToLive(Duration.ofSeconds(refreshTokenTimeToLive))
+            .tokenTimeToLive(tokenProperties.getRefreshTokenTimeToLive())
             .build();
     }
 }

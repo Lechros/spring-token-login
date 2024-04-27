@@ -1,7 +1,7 @@
 package com.lechros.springtokenlogin.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
@@ -13,10 +13,10 @@ import javax.crypto.spec.SecretKeySpec;
 import java.time.Duration;
 
 @Configuration
-public class JwtConfig {
+@RequiredArgsConstructor
+public class TokenConfig {
 
-    @Value("${authorization.issuer}")
-    private String issuer;
+    private final TokenProperties tokenProperties;
 
     @Bean
     public SecretKeySpec secretKeySpec() {
@@ -40,7 +40,7 @@ public class JwtConfig {
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec()).build();
 
         OAuth2TokenValidator<Jwt> validators = new DelegatingOAuth2TokenValidator<>(
-            new JwtIssuerValidator(issuer),
+            new JwtIssuerValidator(tokenProperties.getIssuer()),
             new JwtTimestampValidator(Duration.ofSeconds(1))
         );
         jwtDecoder.setJwtValidator(validators);

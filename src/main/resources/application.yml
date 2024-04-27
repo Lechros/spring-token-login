@@ -33,6 +33,9 @@ spring:
               - profile_nickname
               - profile_image
         provider:
+          apple:
+            authorization-uri: https://appleid.apple.com/auth/authorize
+            token-uri: https://appleid.apple.com/auth/token
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
@@ -43,7 +46,12 @@ spring:
     property-naming-strategy: SNAKE_CASE
 
 authorization:
-  issuer: http://localhost:8080
-  audience: http://localhost:8080
-  access-token-time-to-live: 1800
-  refresh-token-time-to-live: 7776000
+  token:
+    issuer: http://localhost:8080
+    audiences:
+      - http://localhost:8080
+    access-token-time-to-live: 30m
+    refresh-token-time-to-live: 90d
+  authorization-base-uri: /oauth2/authorization
+  redirection-base-uri: /login/oauth2/code
+  token-uri: /oauth2/token
