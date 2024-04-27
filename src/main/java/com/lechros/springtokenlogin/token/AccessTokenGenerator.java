@@ -1,42 +1,38 @@
 package com.lechros.springtokenlogin.token;
 
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-public class AccessTokenGenerator implements TokenGenerator<Jwt> {
+public class AccessTokenGenerator implements TokenGenerator<OAuth2AccessToken> {
 
-    private final JwsHeader jwsHeader;
-    private final JwtEncoder jwtEncoder;
+    private final SecretKeySpec secretKey;
 
-    public Jwt generate(TokenParams params) {
+    public OAuth2AccessToken generate(TokenParams params) {
         if (!TokenType.ACCESS_TOKEN.equals(params.getTokenType())) {
             return null;
         }
 
-        String issuer = params.getIssuer();
-
         Instant issuedAt = Instant.now();
         Instant expiresAt = issuedAt.plus(params.getTokenTimeToLive());
 
-        JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder();
-        if (StringUtils.hasText(issuer)) {
-            claimsBuilder.issuer(issuer);
-        }
-        claimsBuilder
+        String tokenValue = Jwts.builder()
+            .issuer(params.getIssuer())
             .subject(params.getUserId())
-            .audience(params.getAudiences())
-            .issuedAt(issuedAt)
-            .expiresAt(expiresAt)
-            .notBefore(issuedAt);
+            .audience().add(params.getAudiences()).and()
+            .issuedAt(Date.from(issuedAt))
+            .expiration(Date.from(expiresAt))
+            .notBefore(Date.from(issuedAt))
+            .signWith(secretKey)
+            .compact();
 
-        JwtClaimsSet claims = claimsBuilder.build();
-
-        return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims));
+        return new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, tokenValue, issuedAt, expiresAt);
     }
 }

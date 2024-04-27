@@ -26,16 +26,6 @@ public class TokenConfig {
     }
 
     @Bean
-    public JwsHeader jwsHeader() { // JWT 발급에 사용
-        return JwsHeader.with(MacAlgorithm.HS256).build();
-    }
-
-    @Bean
-    public JwtEncoder jwtEncoder() { // JWT 발급에 사용
-        return new NimbusJwtEncoder(new ImmutableSecret<>(secretKeySpec()));
-    }
-
-    @Bean
     public JwtDecoder jwtDecoder() { // OAuth2 Resource Server에서 사용
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec()).build();
 
