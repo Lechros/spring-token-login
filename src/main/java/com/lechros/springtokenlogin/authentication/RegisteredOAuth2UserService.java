@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lechros.springtokenlogin.user.User;
+import com.lechros.springtokenlogin.user.UserRepository;
 import com.lechros.springtokenlogin.user.UserSocialLoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,11 +16,13 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -28,6 +31,7 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
 
     private static final String ID_TOKEN = "id_token";
 
+    private final UserRepository userRepository;
     private final UserSocialLoginService userSocialLoginService;
 
     private final DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
@@ -41,7 +45,7 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
             String idToken = userRequest.getAdditionalParameters().get(ID_TOKEN).toString();
             Map<String, Object> claims = parseClaims(idToken);
             String providerId = (String) claims.get(JwtClaimNames.SUB);
-            User user = userSocialLoginService.findOrRegister(registrationId, providerId);
+            User user = findOrCreateUser(registrationId, providerId);
 
             Map<String, Object> attributes = Map.of(JwtClaimNames.SUB, providerId);
             Set<GrantedAuthority> authorities = Set.of(new OAuth2UserAuthority(attributes));
@@ -59,10 +63,24 @@ public class RegisteredOAuth2UserService implements OAuth2UserService<OAuth2User
                 oauth2UserName = oauth2User.getName();
             }
             // 받아온 정보의 sub로 필요 시 DB에 저장하고 user 가져오기
-            User user = userSocialLoginService.findOrRegister(registrationId, oauth2UserName);
+            User user = findOrCreateUser(registrationId, oauth2UserName);
 
             return new RegisteredOAuth2User(oauth2User.getAuthorities(), oauth2User.getAttributes(), user);
         }
+    }
+
+    @Transactional
+    protected User findOrCreateUser(String provider, String providerId) {
+        Optional<User> optionalUser = userSocialLoginService.findUser(provider, providerId);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        }
+
+        User user = User.withUsername(String.format("new %s user name", provider));
+        user = userRepository.save(user);
+        userSocialLoginService.addUserSocialLogin(user, provider, providerId);
+
+        return user;
     }
 
     private Map<String, Object> parseClaims(String jwt) {

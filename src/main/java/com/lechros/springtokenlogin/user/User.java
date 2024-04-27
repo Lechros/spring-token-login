@@ -21,7 +21,7 @@ public class User {
 
     private String username;
 
-    public static User from(String username) {
+    public static User withUsername(String username) {
         return User.builder()
             .username(username)
             .build();
