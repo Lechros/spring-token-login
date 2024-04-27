@@ -4,11 +4,13 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.time.Duration;
 
 @Configuration
 public class JwtConfig {
@@ -37,8 +39,11 @@ public class JwtConfig {
     public JwtDecoder jwtDecoder() { // OAuth2 Resource Server에서 사용
         NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(secretKeySpec()).build();
 
-        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuer);
-        jwtDecoder.setJwtValidator(withIssuer);
+        OAuth2TokenValidator<Jwt> validators = new DelegatingOAuth2TokenValidator<>(
+            new JwtIssuerValidator(issuer),
+            new JwtTimestampValidator(Duration.ofSeconds(1))
+        );
+        jwtDecoder.setJwtValidator(validators);
 
         return jwtDecoder;
     }
