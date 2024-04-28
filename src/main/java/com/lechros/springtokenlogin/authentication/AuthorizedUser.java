@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.*;
@@ -13,7 +16,7 @@ import java.util.*;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class RegisteredOAuth2User implements OAuth2User {
+public class AuthorizedUser implements OAuth2User, OidcUser {
 
     private final Set<GrantedAuthority> authorities;
 
@@ -21,7 +24,7 @@ public class RegisteredOAuth2User implements OAuth2User {
 
     private final User user;
 
-    public RegisteredOAuth2User(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes, User user) {
+    public AuthorizedUser(Collection<? extends GrantedAuthority> authorities, Map<String, Object> attributes, User user) {
         this.authorities = authorities != null ? Collections.unmodifiableSet(new LinkedHashSet<>(this.sortAuthorities(authorities))) : Collections.unmodifiableSet(new LinkedHashSet<>(AuthorityUtils.NO_AUTHORITIES));
         this.attributes = Collections.unmodifiableMap(new LinkedHashMap<>(attributes));
         this.user = user;
@@ -37,7 +40,18 @@ public class RegisteredOAuth2User implements OAuth2User {
         return sortedAuthorities;
     }
 
-    public static RegisteredOAuth2User from(OAuth2User oauth2User, User user) {
-        return new RegisteredOAuth2User(oauth2User.getAuthorities(), oauth2User.getAttributes(), user);
+    @Override
+    public Map<String, Object> getClaims() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public OidcIdToken getIdToken() {
+        throw new UnsupportedOperationException();
     }
 }

@@ -2,6 +2,8 @@ package com.lechros.springtokenlogin.config;
 
 import com.lechros.springtokenlogin.authentication.InMemoryOAuth2AuthorizationRequestRepository;
 import com.lechros.springtokenlogin.authentication.OAuth2AuthenticationSuccessHandler;
+import com.lechros.springtokenlogin.authentication.AuthorizedOAuth2UserService;
+import com.lechros.springtokenlogin.authentication.AuthorizedOidcUserService;
 import com.lechros.springtokenlogin.provider.AppleClientSecretGenerator;
 import com.lechros.springtokenlogin.provider.ClientSecretGenerator;
 import com.lechros.springtokenlogin.provider.DynamicInMemoryClientRegistrationRepository;
@@ -12,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -29,6 +30,8 @@ import java.util.Map;
 public class AuthorizationConfig {
 
     private final AuthorizationProperties authorizationProperties;
+    private final AuthorizedOAuth2UserService authorizedOAuth2UserService;
+    private final AuthorizedOidcUserService authorizedOidcUserService;
     private final OAuth2AuthenticationSuccessHandler successHandler;
     private final CorsConfigurationSource corsConfigurationSource;
 
@@ -45,6 +48,9 @@ public class AuthorizationConfig {
                     .authorizationRequestRepository(authorizationRequestRepository()))
                 .redirectionEndpoint(redirection -> redirection
                     .baseUri(authorizationProperties.getRedirectionUri()))
+                .userInfoEndpoint(userInfo -> userInfo
+                    .userService(authorizedOAuth2UserService)
+                    .oidcUserService(authorizedOidcUserService))
                 .successHandler(successHandler))
             .cors(cors -> cors.configurationSource(corsConfigurationSource));
 

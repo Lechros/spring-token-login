@@ -23,6 +23,8 @@ spring:
             client-authentication-method: client_secret_post
             redirect-uri: ${client.base-url}/login/callback/apple
             authorization-grant-type: authorization_code
+            scope:
+              - openid
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
             client-secret: ${KAKAO_CLIENT_SECRET}
@@ -30,8 +32,6 @@ spring:
             redirect-uri: ${client.base-url}/login/callback/kakao
             authorization-grant-type: authorization_code
             scope:
-              - profile_nickname
-              - profile_image
           naver:
             client-id: ${NAVER_CLIENT_ID}
             client-secret: ${NAVER_CLIENT_SECRET}
@@ -41,19 +41,22 @@ spring:
             scope:
         provider:
           apple:
+            issuer-uri: https://appleid.apple.com
             authorization-uri: https://appleid.apple.com/auth/authorize
             token-uri: https://appleid.apple.com/auth/token
           kakao:
+            issuer-uri: https://kauth.kakao.com
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-info-authentication-method: POST
-            user-name-attribute: id
+            user-name-attribute: id  # oidc일 경우 sub
           naver:
+            issuer-uri: https://nid.naver.com
             authorization-uri: https://nid.naver.com/oauth2.0/authorize
             token-uri: https://nid.naver.com/oauth2.0/token
             user-info-uri: https://openapi.naver.com/v1/nid/me
-            user-name-attribute: response
+            user-name-attribute: response/id
   jackson:
     property-naming-strategy: SNAKE_CASE
 
