@@ -12,11 +12,11 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class AuthorizedOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User>, AuthorizedUserService {
+public class AuthorizedOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     static final String ATTRIBUTE_DELIMITER = "/";
 
-    private final OAuth2Service oauth2Service;
+    private final AuthorizedUserService authorizedUserService;
 
     private final CustomOAuth2UserService delegate = new CustomOAuth2UserService();
 
@@ -24,7 +24,7 @@ public class AuthorizedOAuth2UserService implements OAuth2UserService<OAuth2User
     public AuthorizedUser loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oauth2User = delegate.loadUser(userRequest);
 
-        return getAuthorizedUser(userRequest, oauth2User, oauth2Service);
+        return authorizedUserService.getAuthorizedUser(userRequest, oauth2User);
     }
 
     @PostConstruct

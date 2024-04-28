@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthorizedOidcUserService implements OAuth2UserService<OidcUserRequest, OidcUser>, AuthorizedUserService {
+public class AuthorizedOidcUserService implements OAuth2UserService<OidcUserRequest, OidcUser> {
 
-    private final OAuth2Service oauth2Service;
+    private final AuthorizedUserService authorizedUserService;
 
     private final OidcUserService delegate = new OidcUserService();
 
@@ -20,6 +20,6 @@ public class AuthorizedOidcUserService implements OAuth2UserService<OidcUserRequ
     public AuthorizedUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
         OidcUser oidcUser = delegate.loadUser(userRequest);
 
-        return getAuthorizedUser(userRequest, oidcUser, oauth2Service);
+        return authorizedUserService.getAuthorizedUser(userRequest, oidcUser);
     }
 }
