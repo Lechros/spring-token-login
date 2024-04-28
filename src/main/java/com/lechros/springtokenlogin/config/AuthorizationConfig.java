@@ -1,9 +1,9 @@
 package com.lechros.springtokenlogin.config;
 
-import com.lechros.springtokenlogin.authentication.InMemoryOAuth2AuthorizationRequestRepository;
-import com.lechros.springtokenlogin.authentication.OAuth2AuthenticationSuccessHandler;
 import com.lechros.springtokenlogin.authentication.AuthorizedOAuth2UserService;
 import com.lechros.springtokenlogin.authentication.AuthorizedOidcUserService;
+import com.lechros.springtokenlogin.authentication.InMemoryOAuth2AuthorizationRequestRepository;
+import com.lechros.springtokenlogin.authentication.OAuth2AuthenticationSuccessHandler;
 import com.lechros.springtokenlogin.provider.AppleClientSecretGenerator;
 import com.lechros.springtokenlogin.provider.ClientSecretGenerator;
 import com.lechros.springtokenlogin.provider.DynamicInMemoryClientRegistrationRepository;
@@ -14,12 +14,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.List;
@@ -51,7 +55,8 @@ public class AuthorizationConfig {
                 .userInfoEndpoint(userInfo -> userInfo
                     .userService(authorizedOAuth2UserService)
                     .oidcUserService(authorizedOidcUserService))
-                .successHandler(successHandler))
+                .successHandler(successHandler)
+                .failureHandler(failureHandler()))
             .cors(cors -> cors.configurationSource(corsConfigurationSource));
 
         return http.build();
@@ -67,5 +72,10 @@ public class AuthorizationConfig {
         Map<String, ClientRegistration> registrations = new OAuth2ClientPropertiesMapper(properties).asClientRegistrations();
         List<ClientSecretGenerator> secretGenerators = List.of(appleClientSecretGenerator);
         return new DynamicInMemoryClientRegistrationRepository(registrations, secretGenerators);
+    }
+
+    @Bean
+    public AuthenticationFailureHandler failureHandler() {
+        return new AuthenticationEntryPointFailureHandler(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }
 }
