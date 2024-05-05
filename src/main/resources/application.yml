@@ -78,3 +78,5 @@ authorization:
   authorization-base-uri: /oauth2/authorization
   redirection-base-uri: /login/oauth2/code
   token-uri: /oauth2/token
+  redirect-uri-parameter-allowed-registrations:
+    - dev

@@ -1,10 +1,6 @@
 package com.lechros.springtokenlogin.config;
 
-import com.lechros.springtokenlogin.authentication.AuthorizedOAuth2UserService;
-import com.lechros.springtokenlogin.authentication.AuthorizedOidcUserService;
-import com.lechros.springtokenlogin.authentication.InMemoryOAuth2AuthorizationRequestRepository;
-import com.lechros.springtokenlogin.authentication.OAuth2AuthenticationSuccessHandler;
-import com.lechros.springtokenlogin.provider.AppleClientSecretGenerator;
+import com.lechros.springtokenlogin.authentication.*;
 import com.lechros.springtokenlogin.provider.ClientSecretGenerator;
 import com.lechros.springtokenlogin.provider.DynamicInMemoryClientRegistrationRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
@@ -37,6 +34,8 @@ public class AuthorizationConfig {
     private final AuthorizedOAuth2UserService authorizedOAuth2UserService;
     private final AuthorizedOidcUserService authorizedOidcUserService;
     private final OAuth2AuthenticationSuccessHandler successHandler;
+    private final OAuth2ClientProperties clientProperties;
+    private final List<ClientSecretGenerator> secretGenerators;
     private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
@@ -49,6 +48,8 @@ public class AuthorizationConfig {
             .oauth2Login(oauth2Login -> oauth2Login
                 .authorizationEndpoint(authorization -> authorization
                     .baseUri(authorizationProperties.getAuthorizationBaseUri())
+                    .authorizationRequestResolver(oauth2AuthorizationRequestResolver(
+                        clientRegistrationRepository(clientProperties, secretGenerators)))
                     .authorizationRequestRepository(authorizationRequestRepository()))
                 .redirectionEndpoint(redirection -> redirection
                     .baseUri(authorizationProperties.getRedirectionUri()))
@@ -63,14 +64,20 @@ public class AuthorizationConfig {
     }
 
     @Bean
+    public OAuth2AuthorizationRequestResolver oauth2AuthorizationRequestResolver(ClientRegistrationRepository clientRegistrationRepository) {
+        String authorizationBaseUri = authorizationProperties.getAuthorizationBaseUri();
+        List<String> allowedRegistrationIds = authorizationProperties.getRedirectUriParameterAllowedRegistrations();
+        return new RedirectUriParameterOAuth2AuthorizationRequestResolver(clientRegistrationRepository, authorizationBaseUri, allowedRegistrationIds);
+    }
+
+    @Bean
     public AuthorizationRequestRepository<OAuth2AuthorizationRequest> authorizationRequestRepository() {
         return new InMemoryOAuth2AuthorizationRequestRepository();
     }
 
     @Bean
-    public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties properties, AppleClientSecretGenerator appleClientSecretGenerator) {
+    public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties properties, List<ClientSecretGenerator> secretGenerators) {
         Map<String, ClientRegistration> registrations = new OAuth2ClientPropertiesMapper(properties).asClientRegistrations();
-        List<ClientSecretGenerator> secretGenerators = List.of(appleClientSecretGenerator);
         return new DynamicInMemoryClientRegistrationRepository(registrations, secretGenerators);
     }
 
