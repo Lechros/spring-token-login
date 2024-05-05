@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.util.Assert;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class InMemoryOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 

@@ -7,7 +7,6 @@ import org.springframework.security.oauth2.core.AbstractOAuth2Token;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.oauth2.core.AbstractOAuth2Token;
 
-import java.time.Instant;
-
 @Entity
 @Getter
 @NoArgsConstructor
