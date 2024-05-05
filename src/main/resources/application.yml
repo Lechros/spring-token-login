@@ -39,6 +39,14 @@ spring:
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope:
+          dev:
+            provider: kakao
+            client-id: ${DEV_CLIENT_ID}
+            client-secret: ${DEV_CLIENT_SECRET}
+            client-authentication-method: client_secret_post
+            redirect-uri: ${client.base-url}/login/callback/dev
+            authorization-grant-type: authorization_code
+            scope:
         provider:
           apple:
             issuer-uri: https://appleid.apple.com
