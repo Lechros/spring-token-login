@@ -18,6 +18,12 @@ public class UserSocialLoginService {
             .map(UserSocialLogin::getUser);
     }
 
+    @Transactional(readOnly = true)
+    public UserSocialLogin getUserSocialLogin(User user) {
+        return userSocialLoginRepository.findByUser(user)
+            .orElseThrow(() -> new RuntimeException("How come there's an user without social login?"));
+    }
+
     @Transactional
     public void addUserSocialLogin(User user, String provider, String providerId) {
         if (userSocialLoginRepository.findByProviderAndProviderId(provider, providerId).isPresent()) {
