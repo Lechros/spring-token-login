@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -18,9 +17,6 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.List;
@@ -34,6 +30,7 @@ public class AuthorizationConfig {
     private final AuthorizedOAuth2UserService authorizedOAuth2UserService;
     private final AuthorizedOidcUserService authorizedOidcUserService;
     private final OAuth2AuthenticationSuccessHandler successHandler;
+    private final OAuth2AuthenticationFailureHandler failureHandler;
     private final OAuth2ClientProperties clientProperties;
     private final List<ClientSecretGenerator> secretGenerators;
     private final CorsConfigurationSource corsConfigurationSource;
@@ -57,7 +54,7 @@ public class AuthorizationConfig {
                     .userService(authorizedOAuth2UserService)
                     .oidcUserService(authorizedOidcUserService))
                 .successHandler(successHandler)
-                .failureHandler(failureHandler()))
+                .failureHandler(failureHandler))
             .cors(cors -> cors.configurationSource(corsConfigurationSource));
 
         return http.build();
@@ -79,10 +76,5 @@ public class AuthorizationConfig {
     public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties properties, List<ClientSecretGenerator> secretGenerators) {
         Map<String, ClientRegistration> registrations = new OAuth2ClientPropertiesMapper(properties).asClientRegistrations();
         return new DynamicInMemoryClientRegistrationRepository(registrations, secretGenerators);
-    }
-
-    @Bean
-    public AuthenticationFailureHandler failureHandler() {
-        return new AuthenticationEntryPointFailureHandler(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
     }
 }
